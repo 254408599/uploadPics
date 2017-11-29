@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>预览上传图片</title>
+	<style>
+        html
+        {
+            text-align: center;
+        }
+        section                         /* 所有文本居中 */
+        {
+            margin: 0 auto;
+            padding: 5px;
+            width: 420px;
+            border: solid 3px gray;
+            border-radius: 3px;         /* 圆角，水平半径为3px */
+            -moz-border-radius: 3px;
+            -webkit-border-radius: 3px;
+        }
+        form
+        {
+            width: 350px;
+            padding: 5px;
+            margin: 0 auto;
+            background-color: gray;
+            border-color: gray;
+            border-radius: 3px;         /* 圆角，水平半径为3px */
+            -moz-border-radius: 3px;
+            -webkit-border-radius: 3px;
+        }
+        table
+        {   
+            table-layout: fixed; 
+            word-break: break-all;  
+            word-wrap: break-word;
+            padding: 5px;
+            height: 200px;
+            width: 420px;
+        }
+        th                              /* 列表标题样式 */
+        {
+            color: #4f6b72;
+            border-right: 1px solid gray;
+            border-bottom: 1px solid gray;
+            border-top: 1px solid gray;
+            letter-spacing: 2px;
+            text-transform: uppercase; /* 标题英文转为大写 */
+            padding: 6px 6px 6px 12px;
+            background: #CAE8EA;
+            width: 75px;
+            border-radius: 3px;         /* 圆角，水平半径为3px */
+            -moz-border-radius: 3px;
+            -webkit-border-radius: 3px;
+        }
+        td                              /* 单元格样式 */
+        {
+            border-right: 1px solid gray;
+            border-bottom: 1px solid;
+            background: #fff;
+            font-size: 11px;
+            padding: 6px 6px 6px 12px;
+            color: #4f6b72;
+            border-radius: 3px;         /* 圆角，水平半径为3px */
+            -moz-border-radius: 3px;
+            -webkit-border-radius: 3px;
+        }
+        img                             /* 预览图片样式 */
+        {
+            max-width: 60px;
+            max-height: 60px;
+        }
+    </style>
+</head>
+<body>
+	<header><h2>预览上传的图片</h2></header>
+	<section>
+		<form action="">
+			<input type="file" name="multi-file" id="multi-file" multiple />
+			<input type="submit" value="提交">
+		</form>
+		<table id="file-list">
+			<tr>
+				<td>空</td>
+			</tr>
+		</table>
+	</section>
+</body>
+<script>
+	(function (){
+		var multi_file = document.getElementById('multi-file');
+		var file_list = document.getElementById('file-list');
+		var slice = Array.prototype.slice;
+		var GUID = 0;
+		function guid () {
+			return GUID++;
+		};
+		multi_file.addEventListener('change', function (e){
+			var files = slice.call(multi_file.files, 0),
+				htmls = ['<tr><th>文件名</th><th>类型</th><th>大小</th><th>预览</th>'];
+			files.forEach(function (file, index){
+				var reader,
+					_guid = guid();
+				htmls.push('<tr><td>'+file.name+'</td><td>'+file.type+'</td><td>'+file.size+'</td><td id="J_'+_guid+'"></td></tr>');
+				if(file.type.toLowerCase().match(/image.*/)){
+					reader = new FileReader();
+					reader.addEventListener('load', function (e){
+						document.getElementById('J_' + _guid).innerHTML = '<img title="'+file.name+'" src="'+e.target.result+'"/>';
+					});
+					reader.readAsDataURL(file);
+				};
+			});
+			file_list.innerHTML = htmls.join('');
+		}, false);
+	})();
+	
+</script>
+</html>
